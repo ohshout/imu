@@ -10,20 +10,21 @@
 
 #include <Arduino.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 enum security_mode {OPEN = 0, SSL = 1, PSK = 2};
 
-class MQTTClient {
+class mqttclient {
 
   public:
-    MQTTClient();
-    ~MQTTClient();
-    void    begin(char * broker, int port, security_mode mode, 
+    mqttclient();
+    ~mqttclient();
+    void    begin(const char * broker, int port, security_mode mode, 
                   char* certificate_file, char *psk_identity, char *psk);
-    boolean publish(char *topic, char *message);
-    boolean subscribe(char* topic, void (*callback)(char *topic, char* message));
-    boolean loop();
-    boolean available();
+    bool publish(char *topic, char *message);
+    bool subscribe(const char* topic, void (*callback)(char *topic, char* message));
+    bool loop();
+    bool available();
     void    close();
 
   private:
@@ -38,7 +39,7 @@ class MQTTClient {
     int            serverPort;
     char           *topic;
     char           *message;
-    boolean         retain_flag;
+    bool         retain_flag;
     void           (*callback_function)(char* topic, char* message);
     char           dataBuffer[256];
 };

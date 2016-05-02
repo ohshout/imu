@@ -1,18 +1,19 @@
-// File: MQTTClient.cpp
+// File: mqttclient.cpp
 #include "mqttclient.h"
+#include <string.h>
 #include <fcntl.h>
 
 /*======================================================================
   Constructor/Destructor
 ========================================================================*/
-MQTTClient::MQTTClient()
+mqttclient::mqttclient()
 {
 }
-MQTTClient::~MQTTClient()
+mqttclient::~mqttclient()
 {
   close();
 }
-void MQTTClient::close()
+void mqttclient::close()
 {
   if (spipe) {
     fclose(spipe);
@@ -21,7 +22,7 @@ void MQTTClient::close()
 /*========================================================================
   Initialization. Store variables to be used for subscribe/publish calls
 ==========================================================================*/
-void MQTTClient::begin(char *broker, int port, security_mode smode, 
+void mqttclient::begin(const char *broker, int port, security_mode smode, 
                        char* cafile, char *user, char *psk)
 {
   strcpy(mqtt_broker, broker);
@@ -34,16 +35,16 @@ void MQTTClient::begin(char *broker, int port, security_mode smode,
     strcpy(psk_identity, user);
     strcpy(psk_password, psk);
   }
-  Serial.println("MQTTClient initialized");
-  Serial.print("Broker: "); Serial.println(mqtt_broker);
-  Serial.print("Port:   "); Serial.println(serverPort);
-  Serial.print("Mode:   "); Serial.println(mode);
+  printf("mqttclient initialized\n");
+  printf("Broker: "); printf("%s\n", mqtt_broker);
+  printf("Port:   "); printf("%d\n", serverPort);
+  printf("Mode:   "); printf("%d\n", mode);
 }
 /*=======================================================================
   Subscribe to a topic, (*callback) is a function to be called when client
   receive a message
 =========================================================================*/
-boolean MQTTClient::subscribe(char* topic, 
+bool mqttclient::subscribe(const char* topic, 
                               void (*callback)(char* topic, char* message))
 {
   char cmdString[256];
@@ -77,10 +78,10 @@ boolean MQTTClient::subscribe(char* topic,
   }
   if ((spipe = (FILE*)popen(cmdString, "r")) != NULL) {
     // we need to set the pipe read mode to non-blocking
-    int fd    = fileno(spipe);
-    int flags = fcntl(fd, F_GETFL, 0);
-    flags |= O_NONBLOCK;
-    fcntl(fd, F_SETFL, flags);
+    //int fd    = fileno(spipe);
+    //int flags = fcntl(fd, F_GETFL, 0);
+    //flags |= O_NONBLOCK;
+    //fcntl(fd, F_SETFL, flags);
     strcpy(topicString, topic);
     return true;
   }
@@ -93,7 +94,7 @@ boolean MQTTClient::subscribe(char* topic,
   if true, parse topic and message and execute callback function
   return if pipe is empty
 ======================================================================*/
-boolean MQTTClient::loop()
+bool mqttclient::loop()
 {
   if (fgets(dataBuffer, sizeof(dataBuffer), spipe)) {    
     parseDataBuffer();    
@@ -103,11 +104,11 @@ boolean MQTTClient::loop()
 /*====================================================================
   Publish a message on the given topic
 ======================================================================*/
-boolean MQTTClient::publish(char *topic, char *message)
+bool mqttclient::publish(char *topic, char *message)
 {
   FILE*   ppipe;
   char    cmdString[256];
-  boolean retval = false;
+  bool retval = false;
   if (this->mqtt_broker == NULL) {
     return false;
   }
@@ -151,7 +152,7 @@ boolean MQTTClient::publish(char *topic, char *message)
   if there is only one recognizable string, it is assumed a message 
   string and topic is set to NULL
 ========================================================================*/
-void MQTTClient::parseDataBuffer()
+void mqttclient::parseDataBuffer()
 {
   topic   = dataBuffer;
   message = dataBuffer;
