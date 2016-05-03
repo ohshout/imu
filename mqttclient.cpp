@@ -35,11 +35,11 @@ void mqttclient::begin(const char *broker, int port, security_mode smode,
     strcpy(psk_identity, user);
     strcpy(psk_password, psk);
   }
-  printf("mqttclient initialized\n");
-  printf("Broker: "); printf("%s\n", mqtt_broker);
-  printf("Port:   "); printf("%d\n", serverPort);
-  printf("Mode:   "); printf("%d\n", mode);
-	fflush(stdout);
+  //printf("mqttclient initialized\n");
+  //printf("Broker: "); printf("%s\n", mqtt_broker);
+  //printf("Port:   "); printf("%d\n", serverPort);
+  //printf("Mode:   "); printf("%d\n", mode);
+	//fflush(stdout);
 }
 /*=======================================================================
   Subscribe to a topic, (*callback) is a function to be called when client
