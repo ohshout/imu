@@ -7,4 +7,4 @@ imu: SparkFun_9DOF_Edison_Block_Example.cpp SFE_LSM9DS0.cpp
 clean:
 	rm -rf mqtttest imutest
 
-.PHONY: mqtt clean
+.PHONY: mqtt clean imu
