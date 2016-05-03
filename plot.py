@@ -23,10 +23,12 @@ class AnalogPlot:
   # constr
   def __init__(self, strPort, maxLen):
       # open serial port
-      self.ser = serial.Serial(strPort, 9600)
+      #self.ser = serial.Serial(strPort, 9600)
+      self.ser = strPort
 
       self.ax = deque([0.0]*maxLen)
       self.ay = deque([0.0]*maxLen)
+      self.az = deque([0.0]*maxLen)
       self.maxLen = maxLen
 
   # add to buffer
@@ -39,24 +41,27 @@ class AnalogPlot:
 
   # add data
   def add(self, data):
-      assert(len(data) == 2)
+      assert(len(data) == 3)
       self.addToBuf(self.ax, data[0])
       self.addToBuf(self.ay, data[1])
+      self.addToBuf(self.az, data[2])
 
   # update plot
-  def update(self, frameNum, a0, a1):
+  def update(self, frameNum, a0, a1, a2):
       try:
           line = self.ser.readline()
           data = [float(val) for val in line.split()]
+          print data
           # print data
-          if(len(data) == 2):
+          if(len(data) == 3):
               self.add(data)
               a0.set_data(range(self.maxLen), self.ax)
               a1.set_data(range(self.maxLen), self.ay)
+              a2.set_data(range(self.maxLen), self.az)
       except KeyboardInterrupt:
           print('exiting')
       
-      return a0, 
+      return a0,
 
   # clean up
   def close(self):
@@ -80,20 +85,21 @@ def main():
   #print('reading from serial port %s...' % strPort)
 
   # plot parameters
-  #analogPlot = AnalogPlot(strPort, 100)
-	while True:
-		print sys.stdin.readline(),
+	analogPlot = AnalogPlot(sys.stdin, 100)
 
-	print('plotting data...')
+	#data = sys.stdin.readline()
+
+	#print('plotting data...')
 
   # set up animation
 	fig = plt.figure()
-	ax = plt.axes(xlim=(0, 100), ylim=(0, 1023))
+	ax = plt.axes(xlim=(0, 100), ylim=(-10000, 10000))
 	a0, = ax.plot([], [])
 	a1, = ax.plot([], [])
+	a2, = ax.plot([], [])
 	anim = animation.FuncAnimation(fig, analogPlot.update, 
-	                                 fargs=(a0, a1), 
-	                                 interval=50)
+																 fargs=(a0, a1, a2), 
+																 interval=1000)
 	
 	  # show plot
 	plt.show()
