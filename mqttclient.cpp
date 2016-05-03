@@ -39,6 +39,7 @@ void mqttclient::begin(const char *broker, int port, security_mode smode,
   printf("Broker: "); printf("%s\n", mqtt_broker);
   printf("Port:   "); printf("%d\n", serverPort);
   printf("Mode:   "); printf("%d\n", mode);
+	fflush(stdout);
 }
 /*=======================================================================
   Subscribe to a topic, (*callback) is a function to be called when client
