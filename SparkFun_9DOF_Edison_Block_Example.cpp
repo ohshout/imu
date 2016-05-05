@@ -23,6 +23,7 @@ Distributed as-is; no warranty is given.
 
 #include <iostream>
 #include <unistd.h>
+#include <unistd.h>
 #include "SFE_LSM9DS0.h"
 using namespace std;
 
@@ -139,7 +140,7 @@ int main()
     ////  good deal of device- and system-specific calibration. The on-board
     ////  temp sensor is probably best not used if local temp data is required!
     //cout<<"-------------------------------------"<<endl;
-    sleep(1);
+    usleep(100000);
   }
 
 	return MRAA_SUCCESS;

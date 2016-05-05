@@ -93,13 +93,13 @@ def main():
 
   # set up animation
 	fig = plt.figure()
-	ax = plt.axes(xlim=(0, 100), ylim=(-10000, 10000))
+	ax = plt.axes(xlim=(0, 100), ylim=(-20000, 20000))
 	a0, = ax.plot([], [])
 	a1, = ax.plot([], [])
 	a2, = ax.plot([], [])
 	anim = animation.FuncAnimation(fig, analogPlot.update, 
 																 fargs=(a0, a1, a2), 
-																 interval=1000)
+																 interval=100)
 	
 	  # show plot
 	plt.show()
