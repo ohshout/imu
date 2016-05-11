@@ -19,18 +19,19 @@ local, and you've found our code helpful, please buy us a round!
 Distributed as-is; no warranty is given.
 ******************************************************************************/
 
-#include "mraa.hpp"
+//#include "mraa.hpp"
+#include "mraa.h"
 
-#include <iostream>
-#include <unistd.h>
+//#include <iostream>
+#include <stdio.h>
 #include <unistd.h>
 #include "SFE_LSM9DS0.h"
-using namespace std;
+//using namespace std;
 
 int main()
 {
-  LSM9DS0 *imu;
-  imu = new LSM9DS0(0x6B, 0x1D);
+  struct LSM9DS0 *imu = malloc(sizeof (*imu));
+  //imu = new LSM9DS0(0x6B, 0x1D);
   // The begin() function sets up some basic parameters and turns the device
   //  on; you may not need to do more than call it. It also returns the "whoami"
   //  registers from the chip. If all is good, the return value here should be
@@ -52,8 +53,10 @@ int main()
   //  the prototype for that function showing the order to pass things:
   //  begin(gyro_scale gScl, accel_scale aScl, mag_scale mScl, 
 	//				gyro_odr gODR, accel_odr aODR, mag_odr mODR)
-  uint16_t imuResult = imu->begin();
+  uint16_t imuResult = begin(imu, G_SCALE_245DPS, A_SCALE_2G, M_SCALE_2GS,
+				G_ODR_95_BW_125, A_ODR_50, M_ODR_50);
   //cout<<hex<<"Chip ID: 0x"<<imuResult<<dec<<" (should be 0x49d4)"<<endl;
+	printf("Chip ID: 0x%X (should be 0x49d4)\n", imuResult);
 
   bool newAccelData = false;
   bool newMagData = false;
@@ -71,15 +74,18 @@ int main()
     {
       if (newAccelData != true)
       {
-        newAccelData = imu->newXData();
+        //newAccelData = imu->newXData();
+        newAccelData = newXData(imu->xm);
       }
       if (newGyroData != true)
       {
-        newGyroData = imu->newGData();
+        //newGyroData = imu->newGData();
+        newGyroData = newGData(imu->gyro);
       }
       if (newMagData != true)
       {
-        newMagData = imu->newMData(); // Temp data is collected at the same
+        //newGyroData = imu->newData();
+        newMagData = newMData(imu->xm); // Temp data is collected at the same
                                       //  rate as magnetometer data.
       } 
     }
@@ -105,10 +111,14 @@ int main()
     //  automated check on whether the data is new; you need to do that
     //  manually as above. Also, there's no check on overflow, so you may miss
     //  a sample and not know it.
-    imu->readAccel();
-    imu->readMag();
-    imu->readGyro();
-    imu->readTemp();
+    //imu->readAccel();
+    //imu->readMag();
+    //imu->readGyro();
+    //imu->readTemp();
+		readAccel(imu);
+		readMag(imu);
+		readGyro(imu);
+		readTemp(imu);
 
     // Print the unscaled 16-bit signed values.
     //cout<<"-------------------------------------"<<endl;
@@ -118,7 +128,9 @@ int main()
     //cout<<"Accel x: "<<imu->ax<<endl;
     //cout<<"Accel y: "<<imu->ay<<endl;
     //cout<<"Accel z: "<<imu->az<<endl;
-		cout << imu->ax << " " << imu->ay << " " << imu->az << endl;
+		//cout << imu->ax << " " << imu->ay << " " << imu->az << endl;
+		printf("%d %d %d\n", imu->ax, imu->ay, imu->az);
+
     //cout<<"Mag x: "<<imu->mx<<endl;
     //cout<<"Mag y: "<<imu->my<<endl;
     //cout<<"Mag z: "<<imu->mz<<endl;
