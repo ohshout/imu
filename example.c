@@ -53,6 +53,7 @@ int main()
   //  the prototype for that function showing the order to pass things:
   //  begin(gyro_scale gScl, accel_scale aScl, mag_scale mScl, 
 	//				gyro_odr gODR, accel_odr aODR, mag_odr mODR)
+	imu_setup(imu, 0x6B, 0x1D);
   uint16_t imuResult = begin(imu, G_SCALE_245DPS, A_SCALE_2G, M_SCALE_2GS,
 				G_ODR_95_BW_125, A_ODR_50, M_ODR_50);
   //cout<<hex<<"Chip ID: 0x"<<imuResult<<dec<<" (should be 0x49d4)"<<endl;
